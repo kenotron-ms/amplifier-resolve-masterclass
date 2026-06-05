@@ -5,26 +5,70 @@ import { getOrderedChapters, chapterLabel } from '../utils/chapters';
 const chapters = await getOrderedChapters();
 const base = import.meta.env.BASE_URL;
 const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+const chUrl = (id: string) => href(`chapters/${id}`);
+
+const numOf = (ch: any) => (typeof ch.data.chapter === 'number' ? ch.data.chapter : 99);
+const isApp = (ch: any) => ch.id.startsWith('appendix');
+
+const arcDefs = [
+  { id: 'I',   title: 'The Mental Model',        blurb: 'Why Resolve is shaped the way it is.',           match: (n: number) => n >= 1 && n <= 3 },
+  { id: 'II',  title: 'The Machine',             blurb: 'The platform mechanism, part by part.',          match: (n: number) => n >= 4 && n <= 9 },
+  { id: 'III', title: 'Strategies & Surfaces',   blurb: 'The resolvers, their UIs, and the dev loop.',    match: (n: number) => n >= 10 && n <= 12 },
+  { id: 'IV',  title: 'The Whole',               blurb: 'Assemble it, keep it, extend it.',               match: (n: number, app: boolean) => n === 13 || app },
+];
+const arcs = arcDefs.map((a) => ({
+  ...a,
+  items: chapters.filter((ch) => a.match(numOf(ch), isApp(ch))),
+}));
+
+const objectives = [
+  ['State the bright line', 'mechanism vs policy — and use it to decide where any new code belongs.'],
+  ['Trace an instance', 'through its eight statuses and four lifecycle phases.'],
+  ['Implement the resolver protocol', 'all twelve members, and know what run() receives.'],
+  ['Emit the event vocabulary', 'correctly — and honor the completion invariant.'],
+  ['Reason about isolation', 'the sealed container and the .resolve/ filesystem bus.'],
+  ['Use the interaction surfaces', "A2UI's three surfaces and the on-demand data bus."],
+  ['Wield the SDK', 'prepare-once sessions, disposable dispatch, antagonistic review, convergence gates.'],
+  ['Compare the three resolvers', 'and pick the right strategy for a task.'],
+  ['Ship a viewport', 'without the SPA shell ever knowing your domain.'],
+  ['Run the inner loop', 'DTU + DEV_RESOLVERS — and respect the merge-gate rule.'],
+];
+
+const audience = [
+  ['The new platform owner', "You've inherited amplifier-resolve. Start here; leave fluent in every subsystem."],
+  ['The resolver author', 'Build a new resolution strategy the platform runs without changing a line.'],
+  ['The platform contributor', 'Extend the daemon, the SDK, or a viewport without breaking the bright line.'],
+  ['The integrator', 'Drive Resolve from your own app, agent, CI, or CLI — it is an API, not an app.'],
+  ['The architect', 'Study a real consumer-agnostic platform for autonomous work, end to end.'],
+];
+
+const mastery = [
+  ['03-design-philosophy', '3',  'State the bright line in one sentence — and give one example of policy that must never live in the platform.'],
+  ['04-instance-lifecycle', '4', 'List the eight statuses. What puts an instance into awaiting_input, and what resumes it?'],
+  ['05-resolver-protocol', '5',  'Name the twelve protocol members. What three things does run() receive?'],
+  ['07-event-vocabulary', '7',   'Why must resolver:completed be emitted at every exit path — and what happens if one path misses it?'],
+  ['07-event-vocabulary', '7',   'merge_state vs update_state: which does the daemon call for partial updates, and why?'],
+  ['08-a2ui-and-interaction', '8', 'Name the three interaction surfaces and who initiates each.'],
+  ['09-session-engine-sdk', '9', 'What is an antagonistic reviewer shown, and why is it bounded to the diff?'],
+  ['10-three-resolvers', '10',   'Contrast dot-graph, orchestrator, and understudy by their theory of correctness.'],
+  ['11-viewports-and-spa', '11', 'Explain the dual-React problem and why React is externalized.'],
+  ['12-provisioning-and-inner-loop', '12', 'Why is the Gitea sidecar addressed by DTU_INCUS_IP and not HOST_GW?'],
+];
 ---
 
 <BaseLayout title="Amplifier Resolve — Masterclass">
-  <section class="hero">
-    <h1>Amplifier Resolve — Masterclass</h1>
-    <p class="subtitle">An Operating System for Autonomous Work — Architecture, Contracts, and Design.</p>
+  <section class="hero hero--lead">
+    <p class="kicker">A masterclass</p>
+    <h1>Amplifier Resolve</h1>
+    <p class="subtitle">An operating system for autonomous work.</p>
 
-    <p>
-      A first-principles → implementation → future reading of <strong>Amplifier Resolve</strong>:
-      the platform that turns a request (&ldquo;resolve this issue&rdquo;) into an isolated,
-      observable, long-lived run of a pluggable resolver — and delivers a pull request at the
-      other end. Where the Amplifier Core masterclass explains the <em>harness</em> that a single
-      AI session plugs into, this one explains the <em>platform that runs many harnesses at once</em>,
-      under isolation, on behalf of the outside world.
+    <p class="lead">
+      A request arrives — <em>resolve this</em>. Resolve seals a container, runs a pluggable
+      <strong>resolver</strong> inside it, narrates every step through a fixed contract, relays a
+      human in and out, and hands back an artifact. One platform, many strategies, total isolation.
+      This class takes you from <strong>first principles</strong> to the <strong>running code</strong>
+      — and to where the platform is going next.
     </p>
-
-    <figure>
-      <img src={href('diagrams/architecture-map.svg')} alt="Amplifier Resolve architecture map: bridge → platform → resolver containers → SPA." />
-      <figcaption>The whole stack at a glance — bridge → platform daemon → resolver containers → SPA (see Chapter 2).</figcaption>
-    </figure>
 
     <div class="callout">
       <span class="label">The through-line</span>
@@ -33,35 +77,118 @@ const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//,
 
     <p>
       Amplifier Core&rsquo;s central idea is <em>mechanism, not policy</em>: the kernel fires events;
-      modules decide what happens. Resolve inherits that idea and lifts it one layer up. The platform
-      owns the lifecycle, the isolation boundary, the transport, and structural validation. The
-      resolver owns the <em>strategy</em> — what to ask for, what the work means, and how to do it
-      correctly. Everything in this masterclass is a consequence of holding that line.
-    </p>
-
-    <p>
-      The signature device is the <strong>Design Decision</strong> callout — a one-sentence statement
-      of a choice the platform makes, followed by <em>why the alternative is worse</em>. If you
-      remember nothing else, remember the Design Decisions. Cross-references use <code>§</code>.
+      modules decide what happens. Resolve inherits that idea and lifts it one layer up. Hold that
+      single line and the whole system falls into place — the lifecycle, the isolation boundary, the
+      event vocabulary, the resolvers, the viewports. Everything here is a consequence of it.
     </p>
   </section>
 
-  <h2 style="font-family:var(--font-sans);border-bottom:1px solid var(--rule);padding-bottom:0.3rem;">
-    Table of contents
-  </h2>
-  <ol class="toc-grid">
-    {
-      chapters.map((ch) => {
+  <section class="full-bleed band">
+    <h2 class="band-title">Who this is for</h2>
+    <div class="aud-grid">
+      {audience.map(([role, blurb]) => (
+        <div class="aud-card">
+          <h3>{role}</h3>
+          <p>{blurb}</p>
+        </div>
+      ))}
+    </div>
+    <p class="prereq">
+      <strong>Prerequisites:</strong> comfort with Python, HTTP, and containers. Familiarity with the
+      <a href="https://anderlpz.github.io/amplifier-masterclass/" rel="noopener">Amplifier Core masterclass</a>
+      helps — Resolve lifts its mechanism-vs-policy idea one layer up — but is not required.
+    </p>
+  </section>
+
+  <section class="full-bleed band">
+    <h2 class="band-title">What you&rsquo;ll be able to do</h2>
+    <p class="band-sub">By the end of this class you can:</p>
+    <ul class="obj-list">
+      {objectives.map(([head, rest]) => (
+        <li><span class="tick" aria-hidden="true">✓</span><span><strong>{head}</strong> — {rest}</span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="full-bleed band">
+    <h2 class="band-title">The learning path</h2>
+    <p class="band-sub">
+      Thirteen chapters and an appendix, in four arcs. Read them in order the first time — the arcs
+      build on each other. Each chapter maps to a subsystem you&rsquo;ll later own.
+    </p>
+    <ol class="curriculum">
+      {arcs.map((arc) => (
+        <li class="arc">
+          <div class="arc-rail"><span class="arc-num">{arc.id}</span></div>
+          <div class="arc-body">
+            <h3 class="arc-head">{arc.title} <span class="arc-blurb">{arc.blurb}</span></h3>
+            <div class="chip-row">
+              {arc.items.map((ch) => (
+                <a class="chapter-chip" href={chUrl(ch.id)}>
+                  <span class="chip-num">{chapterLabel(ch) === 'Appendix' ? 'A' : chapterLabel(ch)}</span>
+                  <span class="chip-title">{ch.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="full-bleed band">
+    <div class="howto">
+      <div class="howto-col">
+        <h2 class="band-title">How to read it</h2>
+        <ul class="howto-list">
+          <li><strong>Go in order, the first time.</strong> Chapters 1–3 build the mental model; don&rsquo;t skip them.</li>
+          <li><strong>Mind the Design Decisions.</strong> Each is a one-sentence choice plus <em>why the alternative is worse</em>. If you remember nothing else, remember those.</li>
+          <li><strong>Follow the §.</strong> Cross-references point to where an idea is paid off in full.</li>
+          <li><strong>Budget ~90 minutes</strong> for a focused first pass (~15k words). It rewards a second.</li>
+        </ul>
+      </div>
+      <div class="howto-col">
+        <h2 class="band-title">After the first read</h2>
+        <ul class="howto-list">
+          <li><strong>Keep the Appendix open.</strong> The glossary and the cross-repo invariants are the day-to-day reference.</li>
+          <li><strong>Jump by subsystem.</strong> Touching the SDK? Re-read §9. The event loop? §7. Viewports? §11.</li>
+          <li><strong>Before you change the platform,</strong> re-read §3 (the bright line) and §13.2 (&ldquo;where new things go&rdquo;) and ask: mechanism, or policy?</li>
+          <li><strong>Honor the pitfalls.</strong> The invariants in the Appendix are the bugs that pass unit tests and break reality.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="full-bleed band band--mastery">
+    <h2 class="band-title">Have you got it?</h2>
+    <p class="band-sub">
+      You&rsquo;ve mastered Resolve when you can answer these from memory. Each links to where the
+      answer lives — but try first, then check.
+    </p>
+    <ol class="mastery">
+      {mastery.map(([id, sec, q]) => (
+        <li>
+          <span>{q}</span>
+          <a class="mastery-ref" href={chUrl(id)}>§{sec}</a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="full-bleed band">
+    <h2 class="band-title">Full table of contents</h2>
+    <ol class="toc-grid">
+      {chapters.map((ch) => {
         const lbl = chapterLabel(ch);
         return (
           <li>
-            <a href={href(`chapters/${ch.id}`)}>
+            <a href={chUrl(ch.id)}>
               <span class="num">{lbl === 'Appendix' ? 'A' : lbl}</span>
               <span class="title">{ch.data.title}</span>
             </a>
           </li>
         );
-      })
-    }
-  </ol>
+      })}
+    </ol>
+  </section>
 </BaseLayout>

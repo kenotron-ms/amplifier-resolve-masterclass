@@ -448,3 +448,237 @@ body {
   font-size: 0.7rem;
   line-height: 1.2;
 }
+
+/* ====================================================================
+   Landing page — sizzle, audience, objectives, curriculum, mastery
+   ==================================================================== */
+
+/* Hero with a soft ambient backdrop (on-theme; no raster art) */
+.hero--lead { position: relative; padding-top: 0.5rem; }
+.hero--lead::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -3rem;
+  transform: translateX(-50%);
+  width: min(120%, 60rem);
+  height: 24rem;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 70% at 28% 0%, rgba(176, 122, 63, 0.16), transparent 70%),
+    radial-gradient(50% 60% at 85% 10%, rgba(31, 86, 115, 0.10), transparent 72%);
+  filter: saturate(1.05);
+}
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  margin: 0 0 0.4rem;
+}
+.hero--lead h1 { font-size: 2.9rem; margin: 0 0 0.4rem; }
+.hero--lead .subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--fg-muted);
+  margin: 0 0 1.4rem;
+}
+.lead { font-size: 1.22rem; line-height: 1.65; }
+.lead strong { color: var(--accent); }
+
+/* Full-bleed content bands */
+.band { margin-top: 3.2rem; padding-top: 2rem; border-top: 1px solid var(--rule); }
+.content .band-title { border-bottom: none; margin: 0 0 0.4rem; font-size: 1.5rem; }
+.band-sub { color: var(--fg-muted); margin: 0 0 1.4rem; max-width: 60ch; }
+
+/* Audience cards */
+.aud-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.9rem;
+}
+.aud-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent-soft);
+  border-radius: 8px;
+  padding: 0.95rem 1.1rem;
+}
+.aud-card h3 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  margin: 0 0 0.3rem;
+  color: var(--accent);
+}
+.aud-card p { margin: 0; font-size: 0.95rem; color: var(--fg); line-height: 1.55; }
+.prereq {
+  margin-top: 1.3rem;
+  font-size: 0.95rem;
+  color: var(--fg-muted);
+  background: rgba(31, 86, 115, 0.06);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+.prereq strong { color: var(--fg); }
+
+/* Objectives — two-column check list */
+.obj-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 0.55rem 1.6rem;
+}
+.obj-list li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: baseline;
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+.obj-list .tick {
+  flex: 0 0 auto;
+  color: #4f6f3c;
+  font-weight: 700;
+  font-family: var(--font-sans);
+}
+.obj-list strong { color: var(--fg); }
+
+/* Curriculum map — the learning-path infographic */
+.curriculum { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+.arc {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr;
+  gap: 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem;
+}
+.arc-rail { display: flex; justify-content: center; }
+.arc-num {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: linear-gradient(160deg, var(--accent-soft), var(--accent));
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(42, 38, 34, 0.18);
+}
+.arc-head {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  margin: 0.1rem 0 0.7rem;
+  color: var(--fg);
+}
+.arc-blurb {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.92rem;
+  color: var(--fg-muted);
+  margin-left: 0.4rem;
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chapter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem 0.35rem 0.4rem;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: border-color 0.15s, transform 0.15s, background 0.15s;
+}
+.chapter-chip:hover {
+  border-color: var(--accent-soft);
+  background: #fff;
+  transform: translateY(-1px);
+}
+.chip-num {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(138, 90, 43, 0.14);
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+}
+.chip-title { font-weight: 500; }
+
+/* How to read / reference mode — two columns */
+.howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1.5rem 2.4rem; }
+.howto-col .band-title { font-size: 1.25rem; }
+.howto-list { margin: 0; padding-left: 1.1rem; }
+.howto-list li { margin: 0.5rem 0; line-height: 1.55; font-size: 0.97rem; }
+.howto-list strong { color: var(--accent); }
+
+/* Mastery self-check */
+.band--mastery .mastery {
+  list-style: none;
+  counter-reset: m;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.mastery li {
+  counter-increment: m;
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  gap: 0.75rem;
+  align-items: baseline;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+.mastery li::before {
+  content: counter(m);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-soft);
+}
+.mastery-ref {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--link);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.1rem 0.45rem;
+  white-space: nowrap;
+}
+.mastery-ref:hover { color: var(--accent); border-color: var(--accent-soft); }
+
+@media (max-width: 860px) {
+  .hero--lead h1 { font-size: 2.2rem; }
+  .mastery li { grid-template-columns: 1.6rem 1fr; }
+  .mastery-ref { grid-column: 2; justify-self: start; margin-top: 0.2rem; }
+}
