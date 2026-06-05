@@ -1,0 +1,30 @@
+// Resolve platform — end-to-end flow. Structural only; layout is computed.
+digraph architecture_map {
+  rankdir=TB;
+  node [shape=box, fontname="Helvetica"];
+
+  github       [label="GitHub Issues / PRs"];
+  bridge       [label="Bridge\n(github webhook)"];
+  platform     [label="amplifier-resolve\nFastAPI platform daemon"];
+  dotgraph     [label="resolver: dot-graph"];
+  orchestrator [label="resolver: orchestrator"];
+  understudy   [label="resolver: understudy"];
+  vp_dg        [label="dot-graph viewport"];
+  vp_or        [label="orchestrator viewport"];
+  vp_un        [label="understudy viewport"];
+  spa          [label="amplifier-app-resolve\nReact SPA shell"];
+  provisioning [label="amplifier-bundle-resolve\nprovisioning / DTU"];
+
+  github       -> bridge        [label="webhook"];
+  bridge       -> platform      [label="POST /instances"];
+  platform     -> dotgraph      [label="launch container"];
+  platform     -> orchestrator;
+  platform     -> understudy;
+  dotgraph     -> vp_dg         [label="events / state"];
+  orchestrator -> vp_or;
+  understudy   -> vp_un;
+  vp_dg        -> spa           [label="viewport.js"];
+  vp_or        -> spa;
+  vp_un        -> spa;
+  provisioning -> platform      [label="stands up", style=dashed];
+}

@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import { getOrderedChapters, chapterLabel } from '../utils/chapters';
+
+interface Props {
+  title: string;
+  /** id (slug) of the current chapter, if on a chapter page */
+  currentId?: string;
+}
+
+const { title, currentId } = Astro.props;
+const chapters = await getOrderedChapters();
+const base = import.meta.env.BASE_URL; // respects astro.config `base`
+const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={href('favicon.svg')} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">☰ Chapters</button>
+      <a class="brand" href={href('')}>Amplifier Resolve — Masterclass</a>
+    </div>
+    <div class="nav-scrim" id="nav-scrim"></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href={href('')}>
+          Amplifier Resolve
+          <span class="sub">Masterclass — an OS for autonomous work</span>
+        </a>
+        <nav aria-label="Chapters">
+          <ol>
+            {
+              chapters.map((ch) => (
+                <li>
+                  <a
+                    class="toc-link"
+                    href={href(`chapters/${ch.id}`)}
+                    aria-current={currentId === ch.id ? 'page' : undefined}
+                  >
+                    <span class="num">{chapterLabel(ch) === 'Appendix' ? 'A' : chapterLabel(ch)}</span>
+                    <span class="label">{ch.data.title}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="content">
+          <slot />
+        </div>
+      </main>
+    </div>
+    <script>
+      const toggle = document.getElementById('menu-toggle');
+      const scrim = document.getElementById('nav-scrim');
+      const close = () => document.body.classList.remove('nav-open');
+      toggle?.addEventListener('click', () => document.body.classList.toggle('nav-open'));
+      scrim?.addEventListener('click', close);
+    </script>
+  </body>
+</html>

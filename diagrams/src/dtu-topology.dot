@@ -1,0 +1,19 @@
+// DTU topology — workers and reality-check are Incus *siblings* of the DTU;
+// the Gitea sidecar is a Docker container that lives INSIDE the DTU.
+digraph dtu_topology {
+  rankdir=TB;
+  node [shape=box, fontname="Helvetica"];
+
+  bridge   [label="Incus bridge"];
+  dtu      [label="DTU\n(resolve stack)"];
+  worker1  [label="worker-1"];
+  worker2  [label="worker-2"];
+  rcheck   [label="reality-check"];
+  gitea    [label="resolve-{id}-gitea\n(Docker, inside DTU)"];
+
+  bridge -> dtu     [label="sibling"];
+  bridge -> worker1 [label="sibling"];
+  bridge -> worker2 [label="sibling"];
+  bridge -> rcheck  [label="sibling"];
+  dtu    -> gitea   [label="hosts (Docker)"];
+}

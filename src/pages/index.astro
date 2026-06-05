@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getOrderedChapters, chapterLabel } from '../utils/chapters';
+
+const chapters = await getOrderedChapters();
+const base = import.meta.env.BASE_URL;
+const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+---
+
+<BaseLayout title="Amplifier Resolve — Masterclass">
+  <section class="hero">
+    <h1>Amplifier Resolve — Masterclass</h1>
+    <p class="subtitle">An Operating System for Autonomous Work — Architecture, Contracts, and Design.</p>
+
+    <p>
+      A first-principles → implementation → future reading of <strong>Amplifier Resolve</strong>:
+      the platform that turns a request (&ldquo;resolve this issue&rdquo;) into an isolated,
+      observable, long-lived run of a pluggable resolver — and delivers a pull request at the
+      other end. Where the Amplifier Core masterclass explains the <em>harness</em> that a single
+      AI session plugs into, this one explains the <em>platform that runs many harnesses at once</em>,
+      under isolation, on behalf of the outside world.
+    </p>
+
+    <figure>
+      <img src={href('diagrams/architecture-map.svg')} alt="Amplifier Resolve architecture map: bridge → platform → resolver containers → SPA." />
+      <figcaption>The whole stack at a glance — bridge → platform daemon → resolver containers → SPA (see Chapter 2).</figcaption>
+    </figure>
+
+    <div class="callout">
+      <span class="label">The through-line</span>
+      <p><strong>The platform provides mechanism. The resolver provides policy.</strong></p>
+    </div>
+
+    <p>
+      Amplifier Core&rsquo;s central idea is <em>mechanism, not policy</em>: the kernel fires events;
+      modules decide what happens. Resolve inherits that idea and lifts it one layer up. The platform
+      owns the lifecycle, the isolation boundary, the transport, and structural validation. The
+      resolver owns the <em>strategy</em> — what to ask for, what the work means, and how to do it
+      correctly. Everything in this masterclass is a consequence of holding that line.
+    </p>
+
+    <p>
+      The signature device is the <strong>Design Decision</strong> callout — a one-sentence statement
+      of a choice the platform makes, followed by <em>why the alternative is worse</em>. If you
+      remember nothing else, remember the Design Decisions. Cross-references use <code>§</code>.
+    </p>
+  </section>
+
+  <h2 style="font-family:var(--font-sans);border-bottom:1px solid var(--rule);padding-bottom:0.3rem;">
+    Table of contents
+  </h2>
+  <ol class="toc-grid">
+    {
+      chapters.map((ch) => {
+        const lbl = chapterLabel(ch);
+        return (
+          <li>
+            <a href={href(`chapters/${ch.id}`)}>
+              <span class="num">{lbl === 'Appendix' ? 'A' : lbl}</span>
+              <span class="title">{ch.data.title}</span>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ol>
+</BaseLayout>

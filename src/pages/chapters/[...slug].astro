@@ -1,0 +1,55 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getOrderedChapters, chapterLabel } from '../../utils/chapters';
+
+export async function getStaticPaths() {
+  const chapters = await getOrderedChapters();
+  return chapters.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prev: i > 0 ? chapters[i - 1] : null,
+      next: i < chapters.length - 1 ? chapters[i + 1] : null,
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+
+const base = import.meta.env.BASE_URL;
+const chUrl = (id: string) => `${base.replace(/\/$/, '')}/chapters/${id}`;
+const label = chapterLabel(entry);
+const eyebrow = label === 'Appendix' ? 'Appendix' : `Chapter ${label}`;
+---
+
+<BaseLayout title={`${entry.data.title} — Amplifier Resolve Masterclass`} currentId={entry.id}>
+  <p class="chapter-eyebrow">{eyebrow}</p>
+  <article>
+    <Content />
+  </article>
+
+  <nav class="pager" aria-label="Chapter navigation">
+    {
+      prev ? (
+        <a class="prev" href={chUrl(prev.id)}>
+          <span class="dir">← Previous</span>
+          {prev.data.title}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next ? (
+        <a class="next" href={chUrl(next.id)}>
+          <span class="dir">Next →</span>
+          {next.data.title}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+  </nav>
+</BaseLayout>

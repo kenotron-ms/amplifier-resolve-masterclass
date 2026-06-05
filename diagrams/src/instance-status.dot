@@ -1,0 +1,24 @@
+// Instance status state machine — the 8 statuses and their transitions.
+digraph instance_status {
+  rankdir=LR;
+  node [shape=box, fontname="Helvetica"];
+
+  created       [label="created"];
+  starting      [label="starting"];
+  running       [label="running"];
+  awaiting      [label="awaiting_input"];
+  paused        [label="paused"];
+  completed     [label="completed"];
+  failed        [label="failed"];
+  cancelled     [label="cancelled"];
+
+  created   -> starting;
+  starting  -> running;
+  running   -> completed;
+  running   -> failed;
+  running   -> cancelled;
+  running   -> awaiting   [label="request_input"];
+  awaiting  -> running    [label="response"];
+  running   -> paused     [label="suspend"];
+  paused    -> running    [label="resume"];
+}
