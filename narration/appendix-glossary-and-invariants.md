@@ -2,7 +2,7 @@ Appendix. The things to keep at hand.
 
 This last part isn't a chapter to be walked through. It's a reference — the things you'll want within reach once you're actually working in the code. Think of it as the drawer you keep open beside you. I won't read it all aloud; that would defeat its purpose. Let me just tell you what's in the drawer, and why it's there.
 
-The first half is the glossary — the vocabulary of this masterclass, gathered in one place. An instance: the unit of work. A resolver: a pluggable strategy. The platform: the daemon that owns lifecycle, isolation, transport, and validation. The worker container, the event vocabulary, the interaction format, the viewport, the Dev Test Unit. Every term you've met, defined in a sentence, each pointing back to the chapter where it earned that definition. When a word goes slippery on you, this is where you firm it up.
+The first half is the glossary — the vocabulary of this masterclass, gathered in one place. An instance: the unit of work. A resolver: a pluggable strategy. The platform: the daemon that owns lifecycle, isolation, transport, and validation. The worker container, the event vocabulary, the interaction format, the viewport, the Digital Twin Universe. Every term you've met, defined in a sentence, each pointing back to the chapter where it earned that definition. When a word goes slippery on you, this is where you firm it up.
 
 Alongside it, two small anchors worth memorizing. The eight statuses an instance can hold — created, starting, running, then completing or failing or being cancelled, with side-trips into awaiting-input and paused. And the required event chain: created, then phase, then artifact, then completed. Four events, in that order, every single run.
 

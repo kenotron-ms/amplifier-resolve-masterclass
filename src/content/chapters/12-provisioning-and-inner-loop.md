@@ -14,7 +14,7 @@ platform breaks.
 ## 12.1 The DTU — a Digital Twin Universe
 
 The `amplifier-bundle-resolve` repo stands up the whole stack — backend, resolvers,
-viewports — inside a canonical **DTU (Dev Test Unit)**: an Incus container provisioned
+viewports — inside a canonical **DTU (Digital Twin Universe)**: an Incus container provisioned
 from the `resolve-stack.yaml` profile. The DTU is a faithful twin of production in a
 box.
 

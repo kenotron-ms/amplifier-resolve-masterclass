@@ -24,7 +24,7 @@ chapter: "A"
 | **Viewport** | A resolver-authored `viewport.js` UI plugin loaded dynamically by the SPA (§11). |
 | **`ViewportProps`** | The stable shell↔viewport boundary contract (§11.3). |
 | **GenericViewport** | The domain-agnostic fallback UI every resolver gets for free (§11.5). |
-| **DTU** | Dev Test Unit — an Incus container that stands up the whole stack for development (§12.1). |
+| **DTU** | Digital Twin Universe — an Incus container that stands up the whole stack for development (§12.1). |
 | **`DEV_RESOLVERS`** | Mechanism that mirrors the local working tree into a Gitea sidecar once, at launch (§12.2). |
 | **Capability** | A named thing a resolver declares it needs (`capabilities_required`) and the platform provisions generically. |
 | **Bridge** | `amplifier-app-resolve-bridge-github` — translates GitHub comments into `POST /instances`. |
