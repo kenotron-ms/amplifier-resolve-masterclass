@@ -15,7 +15,8 @@
   --link: #1f5673;
   --code-fg: #e6e1d6;
 
-  --measure: 70ch;
+  --measure: 70ch;        /* prose column */
+  --wide: 64rem;          /* outer band: how far non-prose may bleed */
   --sidebar-w: 19rem;
 }
 
@@ -110,10 +111,35 @@ body {
   display: flex;
   justify-content: center;
 }
+/* Editorial bleed grid: a centered measure column flanked by gutters.
+   Prose lives in the measure column; non-prose may span the full band. */
 .content {
   width: 100%;
-  max-width: var(--measure);
+  max-width: var(--wide);
   min-width: 0;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    min(var(--measure), 100%)
+    minmax(0, 1fr);
+}
+.content > * { grid-column: 2; }              /* direct children -> measure */
+.content > article { display: contents; }     /* promote markdown children into the grid */
+.content > article > * { grid-column: 2; }    /* markdown prose -> measure */
+
+/* Non-prose bleeds to the full band for intrigue */
+.content > article > figure,
+.content > article > pre,
+.content > article > table,
+.content > article > .full-bleed,
+.content > .full-bleed {
+  grid-column: 1 / -1;
+}
+/* Tables shrink-to-fit when small, use the band when wide */
+.content > article > table {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
 }
 
 /* ---------- Typography ---------- */
