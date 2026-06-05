@@ -1,30 +1,35 @@
 // Resolve platform — end-to-end flow. Structural only; layout is computed.
+// The top row is ANY consumer of the API, not a single privileged path.
 digraph architecture_map {
   rankdir=TB;
   node [shape=box, fontname="Helvetica"];
 
-  github       [label="GitHub Issues / PRs"];
-  bridge       [label="Bridge\n(github webhook)"];
+  // consumers — any caller of the platform's HTTP API
+  spa     [label="SPA (browser)"];
+  agent   [label="agent / script"];
+  cli     [label="CLI"];
+  bridge  [label="CI bridge\n(e.g. GitHub)"];
+
   platform     [label="amplifier-resolve\nFastAPI platform daemon"];
   dotgraph     [label="resolver: dot-graph"];
   orchestrator [label="resolver: orchestrator"];
   understudy   [label="resolver: understudy"];
-  vp_dg        [label="dot-graph viewport"];
-  vp_or        [label="orchestrator viewport"];
-  vp_un        [label="understudy viewport"];
-  spa          [label="amplifier-app-resolve\nReact SPA shell"];
+  viewports    [label="resolver viewports\n(viewport.js)"];
   provisioning [label="amplifier-bundle-resolve\nprovisioning / DTU"];
 
-  github       -> bridge        [label="webhook"];
-  bridge       -> platform      [label="POST /instances"];
-  platform     -> dotgraph      [label="launch container"];
-  platform     -> orchestrator;
-  platform     -> understudy;
-  dotgraph     -> vp_dg         [label="events / state"];
-  orchestrator -> vp_or;
-  understudy   -> vp_un;
-  vp_dg        -> spa           [label="viewport.js"];
-  vp_or        -> spa;
-  vp_un        -> spa;
-  provisioning -> platform      [label="stands up", style=dashed];
+  spa    -> platform [label="POST /instances"];
+  agent  -> platform [label="POST /instances"];
+  cli    -> platform;
+  bridge -> platform;
+
+  platform -> dotgraph     [label="launch container"];
+  platform -> orchestrator;
+  platform -> understudy;
+
+  dotgraph     -> viewports [label="events / state"];
+  orchestrator -> viewports;
+  understudy   -> viewports;
+
+  viewports    -> spa       [label="loaded by"];
+  provisioning -> platform  [label="stands up", style=dashed];
 }

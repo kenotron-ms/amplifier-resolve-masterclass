@@ -1,5 +1,5 @@
 +------------------------------------------------------+
-|    6  EDGE — bridge + GHA triage/review + GitHub     |
+| 6  EDGE — consumers: SPA / agents / CLI / CI bridges |
 +------------------------------------------------------+
   |
   |

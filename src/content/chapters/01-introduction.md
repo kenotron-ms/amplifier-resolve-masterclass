@@ -13,8 +13,9 @@ One conversation. One harness wrapped around one model. When it ends, it ends.
 
 Amplifier Resolve answers a different question:
 
-> What if the request did not come from a person at a terminal, but from a GitHub
-> issue? What if the work took an hour, not a minute? What if it needed to run
+> What if the request did not come from a person at a terminal, but from
+> somewhere else entirely — a browser form, another program, a scheduled job, a
+> CI event? What if the work took an hour, not a minute? What if it needed to run
 > somewhere sealed, where a runaway process could not touch anything that
 > mattered? What if you needed to *watch* it the whole time — from a browser,
 > from another program, from a dashboard — without ever interrupting it? And what
@@ -23,8 +24,32 @@ Amplifier Resolve answers a different question:
 
 That is Resolve. It is the platform that takes a unit of work, runs a pluggable
 **resolver** inside an isolated container, narrates the run through a fixed
-observability contract, relays human input both ways, and delivers an
-artifact — usually a pull request — at the end.
+observability contract, relays human input both ways, and surfaces whatever the
+resolver produces at the end — often a pull request, but just as easily a review,
+a report, a verdict, or a set of files.
+
+## Who drives Resolve
+
+A request can originate anywhere that can speak the platform's HTTP API. A person
+clicking through the SPA. Another agent or script calling `POST /instances`
+headlessly. A command-line tool. A scheduled job. An event-driven bridge that
+turns a GitHub issue comment into a run. Resolve does not privilege any of them —
+to the platform they are all just *a caller selecting a resolver and submitting
+input*.
+
+This masterclass uses one such integration — a GitHub-driven **triage → implement
+→ review** loop — as a running example, because it is concrete and currently the
+flagship deployment. Treat it as an *illustration* of the platform's shape, not
+its definition. The platform is the constant; the consumers, like the resolvers,
+are open-ended.
+
+**Design Decision — Resolve is consumer-agnostic; it is an API, not an app.**
+The platform exposes HTTP / A2UI / SSE contracts and runs whatever instance a
+caller asks for. It has no built-in notion of "the GitHub flow," "the UI flow,"
+or any other privileged path. Baking one consumer's assumptions into the platform
+would make every other consumer a second-class citizen and re-introduce policy
+into the core. The bright line (§3) governs *who asks* exactly as it governs
+*what runs*.
 
 ## The operating-system analogy, one layer up
 
@@ -85,8 +110,8 @@ different third resolver appear without a single platform change. It is the
 
 ## What this document covers
 
-- **Architecture map** — the whole platform stack, and the three-concern flow
-  from a GitHub issue to a delivered PR.
+- **Architecture map** — the whole platform stack, and one example integration: a
+  GitHub-driven triage → implement → review loop.
 - **Design philosophy** — the bright line between platform and resolver, why
   isolation is non-negotiable, and why observability is a *contract* not a
   convenience.

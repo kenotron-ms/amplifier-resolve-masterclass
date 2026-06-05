@@ -11,13 +11,13 @@ from __future__ import annotations
 import pathlib, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SECTIONS = ROOT / "content" / "sections"
+SECTIONS = ROOT / "src" / "content" / "chapters"
 ASCII = ROOT / "diagrams" / "ascii"
 
 # (section file, signature substring, ascii file)
 JOBS = [
-    ("02-architecture-map.md", "GitHub Issues / PRs", "architecture-map.txt"),
-    ("02-architecture-map.md", "Concern 1", "three-concern.txt"),
+    ("02-architecture-map.md", "POST /instances", "architecture-map.txt"),
+    ("02-architecture-map.md", "1 triage", "three-concern.txt"),
     ("04-instance-lifecycle.md", "created", "instance-status.txt"),
     ("12-provisioning-and-inner-loop.md", "Incus bridge", "dtu-topology.txt"),
     ("13-complete-picture.md", "EDGE", "six-layer-stack.txt"),

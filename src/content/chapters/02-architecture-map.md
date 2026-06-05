@@ -12,53 +12,57 @@ neighborhoods and the roads between them. Every box here gets its own section
 later.
 
 ```
-                               ┌───────────────────────┐
-                               │  GitHub Issues / PRs  │
-                               └───────────────────────┘
-                                 │
-                                 │ webhook
-                                 ▼
-                               ┌───────────────────────┐
-                               │        Bridge         │
-                               │   (github webhook)    │
-                               └───────────────────────┘
-                                 │
-                                 │ POST /instances
-                                 ▼
-┌────────────────────────┐     ┌────────────────────────────────────────────────────────┐     ┌──────────────────────┐
-│ resolver: orchestrator │     │                   amplifier-resolve                    │     │ resolver: understudy │
-│                        │ ◀── │                FastAPI platform daemon                 │ ──▶ │                      │
-└────────────────────────┘     └────────────────────────────────────────────────────────┘     └──────────────────────┘
-  │                              │                             ▲                                │
-  │                              │ launch container            ╵ stands up                      │
-  ▼                              ▼                             ╵                                ▼
-┌────────────────────────┐     ┌───────────────────────┐     ┌──────────────────────────┐     ┌──────────────────────┐
-│ orchestrator viewport  │     │  resolver: dot-graph  │     │ amplifier-bundle-resolve │     │ understudy viewport  │
-│                        │     │                       │     │    provisioning / DTU    │     │                      │
-└────────────────────────┘     └───────────────────────┘     └──────────────────────────┘     └──────────────────────┘
-  │                              │                                                              │
-  │                              │ events / state                                               │
-  │                              ▼                                                              │
-  │                            ┌───────────────────────┐                                        │
-  │                            │  dot-graph viewport   │                                        │
-  │                            └───────────────────────┘                                        │
-  │                              │                                                              │
-  │                              │ viewport.js                                                  │
-  │                              ▼                                                              │
-  │                            ┌───────────────────────┐                                        │
-  │                            │ amplifier-app-resolve │                                        │
-  └──────────────────────────▶ │    React SPA shell    │ ◀──────────────────────────────────────┘
-                               └───────────────────────┘
+                                      ┌─────────────────────┐                    ┌──────────────────────────┐
+                                      │   agent / script    │                    │        CI bridge         │
+                                      │                     │                    │      (e.g. GitHub)       │
+                                      └─────────────────────┘                    └──────────────────────────┘
+                                        │                                          │
+                                        │ POST /instances                          │
+                                        ▼                                          ▼
+┌─────┐┌────────────────────────┐     ┌─────────────────────────────────────────────────────────────────────┐     ┌──────────────────────┐
+│ CLI ││ resolver: orchestrator │ ◀── │                                                                     │ ──▶ │ resolver: understudy │
+└─────┘└────────────────────────┘     │                                                                     │     └──────────────────────┘
+  │      │                            │                          amplifier-resolve                          │       │
+  │      │                            │                       FastAPI platform daemon                       │       │
+  │      │                            │                                                                     │       │
+  │      │                            │                                                                     │       │
+  └──────┼──────────────────────────▶ │                                                                     │       │
+         │                            └─────────────────────────────────────────────────────────────────────┘       │
+         │                              │                      ▲                   ▲                                │
+         │                              │ launch container     │ POST /instances   ╵ stands up                      │
+         │                              ▼                      │                   ╵                                │
+         │                            ┌─────────────────────┐  │                 ┌──────────────────────────┐       │
+         │                            │ resolver: dot-graph │  │                 │ amplifier-bundle-resolve │       │
+         │                            │                     │  │                 │    provisioning / DTU    │       │
+         │                            └─────────────────────┘  │                 └──────────────────────────┘       │
+         │                              │                      │                                                    │
+         │                              │ events / state       │                                                    │
+         │                              ▼                      │                                                    │
+         │                            ┌─────────────────────┐  │                                                    │
+         │                            │ resolver viewports  │  │                                                    │
+         └──────────────────────────▶ │    (viewport.js)    │ ◀┼────────────────────────────────────────────────────┘
+                                      └─────────────────────┘  │
+                                        │                      │
+                                        │ loaded by            │
+                                        ▼                      │
+                                      ┌─────────────────────┐  │
+                                      │    SPA (browser)    │ ─┘
+                                      └─────────────────────┘
 ```
 
 ## Reading the diagram
 
 - **Arrows are control + data flow**, top to bottom: a request enters at the top
-  and a delivered artifact (a PR back on GitHub) exits at the top.
-- **The platform daemon is the still center.** Everything above it (the bridge,
-  GitHub) is *how work arrives*. Everything below it (resolvers, viewports, the
-  SPA) is *how work gets done and shown*. The platform depends on neither — it
-  exposes contracts and lets the edges move.
+  from *some* consumer, and the resolver's artifacts (a PR, a review, a report)
+  flow back out to whoever is watching.
+- **The top row is any consumer, not one privileged path.** The SPA, an agent or
+  script, a CLI, a CI bridge — all reach the platform the same way: `POST
+  /instances`. The GitHub bridge shown here is one consumer among several (§1,
+  "Who drives Resolve"), included because the worked example below uses it.
+- **The platform daemon is the still center.** Everything above it — any consumer
+  that can call the API — is *how work arrives*. Everything below it (resolvers,
+  viewports, the SPA-as-renderer) is *how work gets done and shown*. The platform
+  depends on neither — it exposes contracts and lets the edges move.
 - **Each instance gets its own container.** No instance shares memory, process
   space, or filesystem with another. The only link between runs is a `parent_id`
   (§4), exactly as in Core's parent/child sessions.
@@ -81,10 +85,33 @@ mastery.
 | `amplifier-resolver-{dot-graph,orchestrator,understudy}-viewport` | Three custom viewport UIs, one per resolver, each serving a `viewport.js` bundle. |
 | `amplifier-bundle-resolve` | Provisioning bundle. The DTU, the `DEV_RESOLVERS` mechanism, the Gitea sidecar, the resolve-stack scripts. |
 
-## The three-concern architecture
+## How work reaches Resolve
 
-Zoom out and the platform is one stage of a larger loop. The *target* design
-organizes everything a real deployment does into three concerns:
+Before the worked example, hold the general shape in mind. Resolve is API-first,
+so the consumer patterns are open-ended:
+
+| Pattern | Who calls | Shape |
+|---|---|---|
+| **Interactive** | a person in the SPA | pick a resolver, fill the A2UI form, watch, steer |
+| **Programmatic** | another agent or script | `POST /instances` headless, read events/state/artifacts |
+| **Command-line** | a developer or job | a CLI wrapping the same API |
+| **Event-driven** | a bridge (e.g. GitHub) | an external event becomes an instance |
+| **Scheduled** | a timer / cron | the same `POST /instances`, on a clock |
+
+None of these is *the* way to use Resolve. They are all the same act — a caller
+selecting a resolver and submitting input — seen from different angles. The rest
+of this section walks one concrete instance of the **event-driven** pattern.
+
+## A worked example: GitHub-driven triage → implement → review
+
+This is **one integration**, not the architecture. It wires Resolve into a larger
+GitHub loop and is currently the flagship deployment, which makes it a good
+illustration of how the platform plugs into the outside world. Read it as an
+*example*, not a definition — swap GitHub for any other event source and the
+platform does not change.
+
+The loop organizes a real deployment's work into three independently-evolving
+concerns:
 
 ```
 ┌────────────────────┐

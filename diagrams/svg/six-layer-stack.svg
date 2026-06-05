@@ -12,8 +12,8 @@
 <!-- l6 -->
 <g id="node1" class="node">
 <title>l6</title>
-<polygon fill="none" stroke="black" points="379,-396 22,-396 22,-360 379,-360 379,-396"/>
-<text text-anchor="middle" x="200.5" y="-374.3" font-family="Helvetica,sans-Serif" font-size="14.00">6 &#160;EDGE — bridge + GHA triage/review + GitHub</text>
+<polygon fill="none" stroke="black" points="395,-396 6,-396 6,-360 395,-360 395,-396"/>
+<text text-anchor="middle" x="200.5" y="-374.3" font-family="Helvetica,sans-Serif" font-size="14.00">6 &#160;EDGE — consumers: SPA / agents / CLI / CI bridges</text>
 </g>
 <!-- l5 -->
 <g id="node2" class="node">

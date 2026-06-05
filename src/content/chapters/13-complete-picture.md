@@ -16,7 +16,7 @@ without touching the layers underneath.
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│    6  EDGE — bridge + GHA triage/review + GitHub     │
+│ 6  EDGE — consumers: SPA / agents / CLI / CI bridges │
 └──────────────────────────────────────────────────────┘
   │
   │
@@ -77,10 +77,12 @@ Most of the time it is the latter.
 
 ## 13.3 Where it's going — the roadmap
 
-**The three-concern architecture (§2.4) is the target shape.** Triage (Concern 1) and
-review (Concern 3) move fully into GitHub Actions + attractor pipelines, joined to
-Resolve (Concern 2) only by the `/resolve new_instance(...)` command string. Two active
-build-outs:
+**The GitHub triage → implement → review loop (§2) is the flagship integration** — the
+first consumer pattern being built out end-to-end, not the platform's purpose. It is one
+event-driven consumer among the open-ended set (§1, "Who drives Resolve"); the platform
+stays consumer-agnostic beneath it. In this build-out, triage and review move fully into
+GitHub Actions + attractor pipelines, joined to Resolve only by the
+`/resolve new_instance(...)` command string. Two active work items:
 
 - **Bridge `new_instance()` syntax** (`amplifier-app-resolve-bridge-github`): parse
   `new_instance(resolver="…", …)` in the bridge, add `needs-attention` label

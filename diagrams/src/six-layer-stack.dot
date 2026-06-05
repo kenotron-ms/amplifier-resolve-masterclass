@@ -5,7 +5,7 @@ digraph six_layer_stack {
   node [shape=box, fontname="Helvetica"];
   edge [dir=none];
 
-  l6 [label="6  EDGE — bridge + GHA triage/review + GitHub"];
+  l6 [label="6  EDGE — consumers: SPA / agents / CLI / CI bridges"];
   l5 [label="5  CONSUMER — SPA shell + dynamic viewports"];
   l4 [label="4  RESOLVERS — dot-graph / orchestrator / understudy"];
   l3 [label="3  SDK — SessionFactory / EventEmitter / dispatch"];
