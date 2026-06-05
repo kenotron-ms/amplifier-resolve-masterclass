@@ -23,17 +23,28 @@ const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//,
     <title>{title}</title>
   </head>
   <body>
-    <div class="topbar">
+    <div class="topbar" data-pagefind-ignore>
       <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">☰ Chapters</button>
       <a class="brand" href={href('')}>Amplifier Resolve — Masterclass</a>
     </div>
     <div class="nav-scrim" id="nav-scrim"></div>
     <div class="shell">
-      <aside class="sidebar">
+      <aside class="sidebar" data-pagefind-ignore>
         <a class="brand" href={href('')}>
           Amplifier Resolve
           <span class="sub">Masterclass — an OS for autonomous work</span>
         </a>
+        <form class="search" role="search" autocomplete="off" onsubmit="return false">
+          <input
+            id="site-search"
+            type="search"
+            placeholder="Search the masterclass…"
+            aria-label="Search the masterclass"
+            spellcheck="false"
+          />
+          <kbd class="search-hint" aria-hidden="true">/</kbd>
+          <div id="search-results" class="search-results" role="listbox" hidden></div>
+        </form>
         <nav aria-label="Chapters">
           <ol>
             {
@@ -54,7 +65,7 @@ const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//,
         </nav>
       </aside>
       <main class="main">
-        <div class="content">
+        <div class="content" data-pagefind-body>
           <slot />
         </div>
       </main>
@@ -65,6 +76,73 @@ const href = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//,
       const close = () => document.body.classList.remove('nav-open');
       toggle?.addEventListener('click', () => document.body.classList.toggle('nav-open'));
       scrim?.addEventListener('click', close);
+
+      // ---- Pagefind search (static, client-side) ----
+      const input = document.getElementById('site-search');
+      const out = document.getElementById('search-results');
+      const baseUrl = import.meta.env.BASE_URL;
+      const baseHref = baseUrl.replace(/\/$/, '');
+      let pf, timer;
+
+      const loadPagefind = async () => {
+        if (!pf) {
+          pf = await import(/* @vite-ignore */ `${baseUrl}pagefind/pagefind.js`);
+          await pf.options?.({ excerptLength: 18 });
+          pf.init?.();
+        }
+        return pf;
+      };
+
+      const esc = (s) => (s || '').replace(/[&<>"]/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+      const render = (items) => {
+        if (!items.length) {
+          out.innerHTML = '<p class="sr-empty">No matches.</p>';
+          out.hidden = false;
+          return;
+        }
+        out.innerHTML = items.map((d) => {
+          const url = baseHref + d.url.replace(/^\//, '/');
+          return `<a class="sr-item" href="${url}">
+              <span class="sr-title">${esc(d.meta?.title || 'Untitled')}</span>
+              <span class="sr-excerpt">${d.excerpt || ''}</span>
+            </a>`;
+        }).join('');
+        out.hidden = false;
+      };
+
+      const run = async (q) => {
+        if (!q || q.length < 2) { out.hidden = true; out.innerHTML = ''; return; }
+        const p = await loadPagefind();
+        const search = await p.search(q);
+        if (!search) return;
+        const items = await Promise.all(search.results.slice(0, 6).map((r) => r.data()));
+        render(items);
+      };
+
+      input?.addEventListener('input', (e) => {
+        clearTimeout(timer);
+        const q = e.target.value.trim();
+        timer = setTimeout(() => run(q), 120);
+      });
+      input?.addEventListener('focus', () => loadPagefind());
+
+      document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName?.toLowerCase();
+        if (e.key === '/' && tag !== 'input' && tag !== 'textarea') {
+          e.preventDefault();
+          document.body.classList.add('nav-open'); // reveal drawer on mobile
+          input?.focus();
+        } else if (e.key === 'Escape') {
+          out.hidden = true;
+          input?.blur();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search')) out.hidden = true;
+      });
     </script>
   </body>
 </html>

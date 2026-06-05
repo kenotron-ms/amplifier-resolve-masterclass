@@ -30,7 +30,7 @@ const eyebrow = label === 'Appendix' ? 'Appendix' : `Chapter ${label}`;
     <Content />
   </article>
 
-  <nav class="pager" aria-label="Chapter navigation">
+  <nav class="pager" aria-label="Chapter navigation" data-pagefind-ignore>
     {
       prev ? (
         <a class="prev" href={chUrl(prev.id)}>
