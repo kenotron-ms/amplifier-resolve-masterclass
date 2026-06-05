@@ -2,20 +2,20 @@
 // The top row is ANY consumer of the API, not a single privileged path.
 digraph architecture_map {
   rankdir=TB;
-  node [shape=box, fontname="Helvetica"];
+  node [shape=box, fontsize=14, margin="0.3,0.18", fontname="Helvetica"];
 
   // consumers — any caller of the platform's HTTP API
-  spa     [label="SPA (browser)"];
-  agent   [label="agent / script"];
-  cli     [label="CLI"];
-  bridge  [label="CI bridge\n(e.g. GitHub)"];
+  spa     [class="consumer", label="SPA (browser)"];
+  agent   [class="consumer", label="agent / script"];
+  cli     [class="consumer", label="CLI"];
+  bridge  [class="consumer", label="CI bridge\n(e.g. GitHub)"];
 
-  platform     [label="amplifier-resolve\nFastAPI platform daemon"];
-  dotgraph     [label="resolver: dot-graph"];
-  orchestrator [label="resolver: orchestrator"];
-  understudy   [label="resolver: understudy"];
-  viewports    [label="resolver viewports\n(viewport.js)"];
-  provisioning [label="amplifier-bundle-resolve\nprovisioning / DTU"];
+  platform     [class="platform", label="amplifier-resolve\nFastAPI platform daemon"];
+  dotgraph     [class="resolver", label="resolver: dot-graph"];
+  orchestrator [class="resolver", label="resolver: orchestrator"];
+  understudy   [class="resolver", label="resolver: understudy"];
+  viewports    [class="viewport", label="resolver viewports\n(viewport.js)"];
+  provisioning [class="provision", label="amplifier-bundle-resolve\nprovisioning / DTU"];
 
   spa    -> platform [label="POST /instances"];
   agent  -> platform [label="POST /instances"];

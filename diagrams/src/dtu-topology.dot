@@ -2,14 +2,14 @@
 // the Gitea sidecar is a Docker container that lives INSIDE the DTU.
 digraph dtu_topology {
   rankdir=TB;
-  node [shape=box, fontname="Helvetica"];
+  node [shape=box, fontsize=14, margin="0.3,0.18", fontname="Helvetica"];
 
-  bridge   [label="Incus bridge"];
-  dtu      [label="DTU\n(resolve stack)"];
-  worker1  [label="worker-1"];
-  worker2  [label="worker-2"];
-  rcheck   [label="reality-check"];
-  gitea    [label="resolve-{id}-gitea\n(Docker, inside DTU)"];
+  bridge   [class="runtime", label="Incus bridge"];
+  dtu      [class="platform", label="DTU\n(resolve stack)"];
+  worker1  [class="resolver", label="worker-1"];
+  worker2  [class="resolver", label="worker-2"];
+  rcheck   [class="resolver", label="reality-check"];
+  gitea    [class="provision", label="resolve-{id}-gitea\n(Docker, inside DTU)"];
 
   bridge -> dtu     [label="sibling"];
   bridge -> worker1 [label="sibling"];

@@ -2,15 +2,15 @@
 // Vertical order is forced by edges; arrowheads suppressed (this is a stack).
 digraph six_layer_stack {
   rankdir=TB;
-  node [shape=box, fontname="Helvetica"];
+  node [shape=box, fontsize=14, margin="0.3,0.18", fontname="Helvetica"];
   edge [dir=none];
 
-  l6 [label="6  EDGE — consumers: SPA / agents / CLI / CI bridges"];
-  l5 [label="5  CONSUMER — SPA shell + dynamic viewports"];
-  l4 [label="4  RESOLVERS — dot-graph / orchestrator / understudy"];
-  l3 [label="3  SDK — SessionFactory / EventEmitter / dispatch"];
-  l2 [label="2  PLATFORM — FastAPI daemon (still center)"];
-  l1 [label="1  RUNTIME — Incus / Docker + .resolve/ bus"];
+  l6 [class="consumer", label="6  EDGE — consumers: SPA / agents / CLI / CI bridges"];
+  l5 [class="viewport", label="5  CONSUMER — SPA shell + dynamic viewports"];
+  l4 [class="resolver", label="4  RESOLVERS — dot-graph / orchestrator / understudy"];
+  l3 [class="resolver", label="3  SDK — SessionFactory / EventEmitter / dispatch"];
+  l2 [class="platform", label="2  PLATFORM — FastAPI daemon (still center)"];
+  l1 [class="runtime", label="1  RUNTIME — Incus / Docker + .resolve/ bus"];
 
   l6 -> l5 -> l4 -> l3 -> l2 -> l1;
 }

@@ -13,8 +13,62 @@ lifecycle and you have the spine of the whole platform.
 
 An instance is always in exactly one of eight statuses (`InstanceStatusEnum`):
 
-```
-                                 ┌───────────┐
+<!-- diagram:instance-status -->
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" class="rdiagram" width="670" height="316" viewBox="-10 -10 670 316" preserveAspectRatio="xMidYMid meet" role="img">
+<defs><filter id="nshadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="1.6" stdDeviation="2.6" flood-color="#2a2622" flood-opacity="0.16"/></filter><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0.6 L9,5 L0,9.4 L2.4,5 Z" fill="#6b6359"/></marker></defs>
+<path d="M 96.1 127.0 C 104.6 127.0 113.7 127.0 122.5 127.0" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<path d="M 232.3 127.0 C 240.8 127.0 249.7 127.0 258.4 127.0" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<path d="M 327.9 106.3 C 338.1 84.3 357.4 50.6 386.0 35.0 C 418.3 17.4 458.6 13.2 493.6 14.1" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="393.5" y="2.2" width="85.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="436.0" y="14.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">request_input</text>
+<path d="M 368.4 114.3 C 374.3 113.1 380.3 111.9 386.0 111.0 C 430.2 103.9 480.8 99.8 518.6 97.6" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="411.5" y="87.2" width="49.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="436.0" y="99.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">suspend</text>
+<path d="M 368.2 142.2 C 374.2 143.7 380.2 145.0 386.0 146.0 C 426.2 152.8 471.8 155.6 508.2 156.7" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<path d="M 358.0 147.5 C 367.1 151.9 376.8 156.4 386.0 160.0 C 432.1 178.1 486.6 193.6 525.3 203.6" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<path d="M 335.1 147.6 C 347.5 162.9 366.1 183.4 386.0 197.0 C 424.6 223.5 473.7 243.3 512.2 256.4" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<path d="M 513.7 45.5 C 504.4 48.4 495.0 51.3 486.0 54.0 C 441.9 67.1 427.8 61.6 386.0 81.0 C 374.7 86.3 363.2 93.4 353.0 100.5" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="408.5" y="41.2" width="55.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="436.0" y="53.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">response</text>
+<path d="M 532.6 115.6 C 518.1 121.5 501.6 127.1 486.0 130.0 C 450.6 136.6 410.3 136.1 378.1 133.8" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="414.5" y="117.2" width="43.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="436.0" y="129.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">resume</text>
+<g filter="url(#nshadow)">
+<rect x="0.0" y="106.5" width="96.0" height="41.0" rx="14.0" fill="#eef2f4" stroke="#7fa0b0" stroke-width="1.5"/>
+</g>
+<text x="48.0" y="130.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#3f6075">created</text>
+<g filter="url(#nshadow)">
+<rect x="133.0" y="106.5" width="99.0" height="41.0" rx="14.0" fill="#eef2f4" stroke="#7fa0b0" stroke-width="1.5"/>
+</g>
+<text x="182.5" y="130.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#3f6075">starting</text>
+<g filter="url(#nshadow)">
+<rect x="269.0" y="106.5" width="99.0" height="41.0" rx="14.0" fill="#f6e7d0" stroke="#b07a3f" stroke-width="1.5"/>
+</g>
+<text x="318.5" y="130.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#8a5a2b">running</text>
+<g filter="url(#nshadow)">
+<rect x="504.0" y="4.5" width="146.0" height="41.0" rx="14.0" fill="#f3ead2" stroke="#c69a4a" stroke-width="1.5"/>
+</g>
+<text x="577.0" y="28.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#8a6a1f">awaiting_input</text>
+<g filter="url(#nshadow)">
+<rect x="529.0" y="74.5" width="96.0" height="41.0" rx="14.0" fill="#f3ead2" stroke="#c69a4a" stroke-width="1.5"/>
+</g>
+<text x="577.0" y="98.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#8a6a1f">paused</text>
+<g filter="url(#nshadow)">
+<rect x="518.5" y="136.5" width="117.0" height="41.0" rx="14.0" fill="#e7efe2" stroke="#7fa06a" stroke-width="1.5"/>
+</g>
+<text x="577.0" y="160.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#4f6f3c">completed</text>
+<g filter="url(#nshadow)">
+<rect x="535.5" y="195.5" width="83.0" height="41.0" rx="14.0" fill="#f1e3da" stroke="#c08a6a" stroke-width="1.5"/>
+</g>
+<text x="577.0" y="219.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#8a4f2f">failed</text>
+<g filter="url(#nshadow)">
+<rect x="522.0" y="254.5" width="110.0" height="41.0" rx="14.0" fill="#f1e3da" stroke="#c08a6a" stroke-width="1.5"/>
+</g>
+<text x="577.0" y="278.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#8a4f2f">cancelled</text>
+</svg>
+<figcaption>The eight instance statuses and their transitions.</figcaption>
+<details class="diagram-text"><summary>Text version</summary><pre class="diagram-ascii">                                 ┌───────────┐
                                  │  paused   │ ─┐
                                  └───────────┘  │
                                    ▲            │
@@ -34,8 +88,9 @@ An instance is always in exactly one of eight statuses (`InstanceStatusEnum`):
                                    ▼                       ▼
                                  ┌───────────┐           ┌───────────┐
                                  │ cancelled │           │ completed │
-                                 └───────────┘           └───────────┘
-```
+                                 └───────────┘           └───────────┘</pre></details>
+</figure>
+<!-- /diagram:instance-status -->
 
 | Status | Meaning |
 |---|---|

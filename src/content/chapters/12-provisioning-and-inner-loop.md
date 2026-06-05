@@ -23,8 +23,54 @@ The critical topology fact: **workers and reality-check sub-instances are pure I
 parent container that workers live within; it is a peer. This single fact explains
 almost every provisioning pitfall below.
 
-```
-                             ┌──────────────────────┐
+<!-- diagram:dtu-topology -->
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" class="rdiagram" width="584" height="275" viewBox="-10 -10 584 275" preserveAspectRatio="xMidYMid meet" role="img">
+<defs><filter id="nshadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="1.6" stdDeviation="2.6" flood-color="#2a2622" flood-opacity="0.16"/></filter><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0.6 L9,5 L0,9.4 L2.4,5 Z" fill="#6b6359"/></marker></defs>
+<path d="M 252.9 41.1 C 240.1 46.8 226.2 53.0 213.5 59.0 C 194.5 67.9 174.0 78.0 155.4 87.4" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="213.5" y="61.2" width="49.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="238.0" y="73.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">sibling</text>
+<path d="M 286.2 41.2 C 277.3 55.4 265.3 74.6 255.4 90.4" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="273.5" y="61.2" width="49.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="298.0" y="73.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">sibling</text>
+<path d="M 313.8 41.0 C 318.1 46.7 322.6 53.0 326.5 59.0 C 333.1 69.1 339.7 80.4 345.4 90.6" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="335.5" y="61.2" width="49.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="360.0" y="73.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">sibling</text>
+<path d="M 348.4 41.2 C 361.6 46.7 375.7 52.8 388.5 59.0 C 410.9 69.8 435.3 83.1 455.3 94.4" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="416.5" y="61.2" width="49.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="441.0" y="73.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">sibling</text>
+<path d="M 93.5 148.0 C 93.5 160.3 93.5 175.0 93.5 188.4" fill="none" stroke="#6b6359" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.85"/>
+<rect x="100.0" y="168.2" width="91.0" height="16" rx="8" fill="#f7f3e9" stroke="#d9cfb8" stroke-width="1"/>
+<text x="145.5" y="180.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10.5" fill="#6b6359">hosts (Docker)</text>
+<g filter="url(#nshadow)">
+<rect x="232.5" y="0.0" width="132.0" height="41.0" rx="14.0" fill="#e9e7e0" stroke="#9b9484" stroke-width="1.5"/>
+</g>
+<text x="298.5" y="24.4" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#5d564a">Incus bridge</text>
+<g filter="url(#nshadow)">
+<rect x="20.5" y="92.0" width="146.0" height="56.0" rx="14.0" fill="#f6e7d0" stroke="#b07a3f" stroke-width="1.5"/>
+</g>
+<text x="93.5" y="115.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#8a5a2b">DTU</text>
+<text x="93.5" y="132.2" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="500" fill="#6b6359">(resolve stack)</text>
+<g filter="url(#nshadow)">
+<rect x="185.0" y="99.5" width="105.0" height="41.0" rx="14.0" fill="#f1ead8" stroke="#b89a63" stroke-width="1.5"/>
+</g>
+<text x="237.5" y="123.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#6f5a2e">worker-1</text>
+<g filter="url(#nshadow)">
+<rect x="308.0" y="99.5" width="105.0" height="41.0" rx="14.0" fill="#f1ead8" stroke="#b89a63" stroke-width="1.5"/>
+</g>
+<text x="360.5" y="123.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#6f5a2e">worker-2</text>
+<g filter="url(#nshadow)">
+<rect x="431.0" y="99.5" width="133.0" height="41.0" rx="14.0" fill="#f1ead8" stroke="#b89a63" stroke-width="1.5"/>
+</g>
+<text x="497.5" y="123.9" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#6f5a2e">reality-check</text>
+<g filter="url(#nshadow)">
+<rect x="0.0" y="199.0" width="187.0" height="56.0" rx="14.0" fill="#efe9dc" stroke="#a99c80" stroke-width="1.5"/>
+</g>
+<text x="93.5" y="222.7" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="14.0" font-weight="700" fill="#7a6f55">resolve-{id}-gitea</text>
+<text x="93.5" y="239.2" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="500" fill="#6b6359">(Docker, inside DTU)</text>
+</svg>
+<figcaption>DTU topology: workers and reality-check are Incus siblings of the DTU; the Gitea sidecar is a Docker container that lives inside it.</figcaption>
+<details class="diagram-text"><summary>Text version</summary><pre class="diagram-ascii">                             ┌──────────────────────┐
                              │       worker-2       │
                              └──────────────────────┘
                                ▲
@@ -46,8 +92,9 @@ almost every provisioning pitfall below.
                              ┌──────────────────────┐
                              │  resolve-{id}-gitea  │
                              │ (Docker, inside DTU) │
-                             └──────────────────────┘
-```
+                             └──────────────────────┘</pre></details>
+</figure>
+<!-- /diagram:dtu-topology -->
 
 ## 12.2 `DEV_RESOLVERS` — the one-time snapshot
 

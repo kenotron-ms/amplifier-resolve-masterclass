@@ -1,12 +1,12 @@
 // The four lifecycle phases the platform moves every instance through.
 digraph lifecycle_phases {
   rankdir=LR;
-  node [shape=box, fontname="Helvetica"];
+  node [shape=box, fontsize=14, margin="0.3,0.18", fontname="Helvetica"];
 
-  intake    [label="Intake\nvalidate input"];
-  provision [label="Provision\ncontainer + launch"];
-  execute   [label="Execute\nresolver runs"];
-  finalize  [label="Finalize\nreconcile + cleanup"];
+  intake    [class="platform", label="Intake\nvalidate input"];
+  provision [class="platform", label="Provision\ncontainer + launch"];
+  execute   [class="active", label="Execute\nresolver runs"];
+  finalize  [class="good", label="Finalize\nreconcile + cleanup"];
 
   intake -> provision -> execute -> finalize;
 }

@@ -1,12 +1,12 @@
 // The required four-event chain of the resolver vocabulary.
 digraph event_chain {
   rankdir=LR;
-  node [shape=box, fontname="Helvetica"];
+  node [shape=box, fontsize=14, margin="0.3,0.18", fontname="Helvetica"];
 
-  created   [label="resolver:created"];
-  phase     [label="resolver:phase"];
-  artifact  [label="resolver:artifact"];
-  completed [label="resolver:completed"];
+  created   [class="start", label="resolver:created"];
+  phase     [class="active", label="resolver:phase"];
+  artifact  [class="resolver", label="resolver:artifact"];
+  completed [class="good", label="resolver:completed"];
 
   created -> phase    [label="repeat"];
   phase   -> artifact [label="repeat"];

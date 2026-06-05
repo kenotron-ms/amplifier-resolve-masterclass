@@ -1,15 +1,15 @@
 // The three-concern architecture. Concern 2 (Implement) is Resolve itself.
 digraph three_concern {
   rankdir=TB;
-  node [shape=box, fontname="Helvetica"];
+  node [shape=box, fontsize=14, margin="0.3,0.18", fontname="Helvetica"];
 
-  issue   [label="issue.opened"];
-  triage  [label="triage pipeline"];
-  cmd     [label="/resolve\nnew_instance(...)"];
-  resolve [label="Resolve API\nresolver container"];
-  pr      [label="PR created"];
-  review  [label="review pipeline"];
-  comments[label="PR review comments"];
+  issue   [class="consumer", label="issue.opened"];
+  triage  [class="resolver", label="triage pipeline"];
+  cmd     [class="platform", label="/resolve\nnew_instance(...)"];
+  resolve [class="platform", label="Resolve API\nresolver container"];
+  pr      [class="good", label="PR created"];
+  review  [class="resolver", label="review pipeline"];
+  comments[class="consumer", label="PR review comments"];
 
   // Concern 1 — Triage
   issue  -> triage  [label="1 triage"];

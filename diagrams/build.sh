@@ -22,12 +22,15 @@ command -v graph-easy >/dev/null || { echo "ERROR: 'graph-easy' not found (see h
 
 for f in "$SRC"/*.dot; do
   name="$(basename "$f" .dot)"
-  echo "• $name"
-  dot -Tsvg "$f" -o "$SVG/$name.svg"
-  # Unicode box-drawing ASCII (primary, looks best in code fences)
+  echo "• $name (ascii)"
+  # Unicode box-drawing ASCII (terminal / text-version fallback)
   graph-easy --from=dot --as_boxart "$f" > "$ASCII/$name.txt" 2>/dev/null
   # Pure-ASCII fallback (no Unicode), useful for plain-text contexts
   graph-easy --from=dot --as_ascii  "$f" > "$ASCII/$name.ascii.txt" 2>/dev/null
 done
 
+# Polished, themed SVGs (graphviz computes layout; render.py applies the design).
+python3 "$HERE/render.py"
+
 echo "Done. SVG -> diagrams/svg/  ASCII -> diagrams/ascii/"
+echo "Next: python3 diagrams/embed.py  (inlines SVGs into the chapters)"
